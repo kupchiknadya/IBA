@@ -9,4 +9,3 @@
 Документация API для работы с проектом представлена
 ## Описание Kafka
 Описание используемого брокера сообщений, приложения продьюсера, консьюмера представлены в разделе [Kafka](https://docs.google.com/spreadsheets/d/1260sb7T-fsTdNyeQzJkAdMG5JF0HRgUqRnIoq7X_6sc/edit?gid=0#gid=0)
-
