@@ -1,1 +1,321 @@
+openapi: 3.0.0
+info:
+  version: 3.0.0
+  title: 'API for E-Shop'
+  description: 'The API for the E-Shop'
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/NADYAKUPCHIK_1/IBA_1/3.0.0
+tags:
+ - name: user
+   description: All categories of users
+ - name: client 
+   description: Auth user 
+ - name: economist
+   description: Auth user with role economist.
+paths: 
+  /login:
+    post:
+      tags:
+        - user
+      summary: Entre user to system
+      description: Enter user to sysytem with login and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  description: Username user
+                  example: "nadya@mail.ru"
+                password:
+                  type: string
+                  format: password
+                  description: Password user
+                  example: "Racgh@14Fr"
+      responses:
+        '200':
+          description: Successful auth
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: Auth Token 
+                    example: "%%%%%%%%%%%%&&&&&"
+        '400':
+          description: wrong way
+        '401':
+          description: invalid username or password
+        '500':
+          description: Server error
+  /groups/{id}/products:
+    get:
+      tags:
+        - user
+        - client
+        - economist
+      summary: To view the product group with products in it 
+      description: To get information about the list of products included in the particular product group  
+      parameters:
+        - name: id
+          in: path
+          description: Product group identifier
+          required: true
+          schema:
+            type: integer
+            example: 3
+      responses:
+        '200':
+          description: Product group with the list of products is found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/product'
+        '404':
+          description: Product group not found
+        '500': 
+          description: Server error 
+  /orders:
+    post:
+      tags: 
+        - client
+      summary: Create an order 
+      description: Сreating an order when placing products in the basket
+      operationId: createOrder
+      security: 
+        - bearerAuth: []
+      responses:
+        '201':    
+          description: Order created
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/order'
+        '500':
+          description: Server error
+          
+  /orders/{orderId}/products/{productId}:
+    post:
+      tags: 
+        - client
+      summary: Add the product to the order
+      description: Add the product to the order
+      operationId: addProduct
+      security: 
+        - bearerAuth: []
+      parameters: 
+        - name: orderId
+          in: path
+          description: Order identifier
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: productId
+          in: path
+          description: Product identifier to be added
+          required: true
+          schema:
+            type: integer
+            example: 101
+      responses:
+        '201':
+          description: Product added
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/order'
+        '400':
+          description: Incorrect URL
+          
+    delete:
+      tags: 
+        - client
+      summary: Delete the product from the order
+      description: Delete the product from the order
+      operationId: deleteProduct
+      security: 
+        - bearerAuth: []
+      parameters: 
+        - name: orderId
+          in: path
+          description: Order identifier
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: productId
+          in: path
+          description: Product identifier to be deleted
+          required: true
+          schema:
+            type: integer
+            example: 101
+      responses:
+        '201':
+          description: Product deleted
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/order'
+        '400':
+          description: Incorrect URL
+          
+  /products/{productId}:        
+    patch:
+      tags: 
+        - economist
+      summary: Update information about the product
+      description: Update information about an existing product in the system
+      operationId: updateProtuct
+      security: 
+        - bearerAuth: []
+      parameters:
+        - name: productId
+          in: path
+          description: Product identifier to be updated
+          required: true
+          schema:
+            type: integer
+            example: 101
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/product'
+      responses: 
+        '201':
+          description: Updated information about the product by its identifier
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  item:
+                    $ref: '#/components/schemas/product'
+                  update_time:
+                    type: string
+                    format: datetime
+                    description: Date and time of updating informating about the product by its identifier
+                    example: "2025-01-06 22:18"
+        '400':
+          description:  Incorrect request
+        '403':
+          description: No execute permission
 
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    product:
+      type: object
+      required:
+        - id
+        - groupId
+        - name
+        - start_price
+        - discount
+        - price_with_discount
+        - char_code
+        - count_of_product_warehouse
+      properties:
+        id:
+          type: integer
+          description: Product identifier
+          example: 101
+        groupId:
+          type: integer
+          description: Product group identifier
+          example: 3
+        name:
+          type: string
+          description: Name of the product
+          example: "Молоко 1,5% Милкавита"
+        start_price:
+          type: number
+          format: decimal
+          description: Basic price of the product
+          example: 3.28
+        discount:
+          type: number
+          description: Amount of product discount
+          example: 15
+        price_with_discount:
+          type: number
+          format: decimal
+          description: Price after discount applied
+          example: 2.79
+        char_code:
+          type: string
+          description: Char-code of the product
+          example: "SHP0101"
+        count_of_product_warehouse:
+          type: integer
+          description: Quantity of product in stock
+          example: 120
+        
+    order:
+      type: object
+      required:
+        - order_id
+        - product_id
+        - client_id
+        - product_amount
+        - order_sum
+        - order_status
+        - order_date
+      properties:
+        order_id:
+          type: integer
+          description: Order identifier
+          example: 1
+        product_id:
+          type: integer
+          description: Product identifier
+          example: 101
+        client_id:
+          type: integer
+          description: Client identifier
+          example: 4582
+        product_amount:
+          type: integer
+          description: Amount of product in the order
+          example: 2
+        order_sum:
+          type: number
+          format: decimal
+          description: Total order sum
+          example: 25.16
+        order_status:
+          type: string
+          description: Order status
+          example: new
+        order_date:
+          type: string
+          format: date
+          description: Order creation date
+          example: "2025-01-06"
