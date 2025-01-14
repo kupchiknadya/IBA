@@ -6,6 +6,6 @@
 ## Архитектура проекта
 Архитектура проекта представлена в [файле](https://github.com/kupchiknadya/IBA/blob/main/%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80/%D0%90%D1%80%D1%85%D0%B8%D1%82%D0%B5%D0%BA%D1%82%D1%83%D1%80%D0%B0) 
 ## API
-Документация API для работы с проектом представлена
+Документация API для работы с проектом представлена https://app.swaggerhub.com/apis/NADYAKUPCHIK_1/IBA_1/3.0.0
 ## Описание Kafka
 Описание используемого брокера сообщений, приложения продьюсера, консьюмера представлены в разделе [Kafka](https://docs.google.com/spreadsheets/d/1260sb7T-fsTdNyeQzJkAdMG5JF0HRgUqRnIoq7X_6sc/edit?gid=0#gid=0)
